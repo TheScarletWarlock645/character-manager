@@ -52,6 +52,16 @@ try:
             }
             with open('settings.json', 'w') as f:
                 json.dump(newPath, f)
+        elif settingsChange == 2:
+            dirName = input("Choose a name for the directory: ")
+            newDirName = dirName.replace(" ", "-").lower()
+            os.system(f"mkdir ~/{newDirName}/")
+
+            newPath = {
+                "CharLibPath": f"~/{newDirName}"
+            }
+            with open('settings.json', 'w') as f:
+                json.dump(newPath, f)
 
     else:
         print()
