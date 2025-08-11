@@ -88,9 +88,6 @@ try:
     print()
     for i, item in enumerate(startActions, 1):
         print(f"{i}. {item}")
-        rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
-        exit()
-
     print()
     startChoice = int(input("Enter an option: "))
     if startChoice == 1:
