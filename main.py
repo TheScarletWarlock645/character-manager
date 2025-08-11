@@ -1,10 +1,15 @@
 import json
 import os
 import rich
+import subprocess
 from rich import print as rprint
 from rich.prompt import Prompt
+from rich.table import Table
+from rich.console import Console
 
 try:
+    console = Console()
+
     statList = ["Name", "Class and level", "Race", "Background", "Alignment", "XP", "Prof bonus", "Ability scores", "Ability profs", "Skill profs",
     "Other profs and languages", "Armour class", "Initiative", "Speed", "HP", "Hit dice", "Money", "Equipment", "Features and traits", "Attacks and spellcasting"]
     statListList = len(statList) // 2
@@ -15,20 +20,72 @@ try:
     raceList = ["Dragonborn", "Dwarf", "Elf", "Gnome", "Half-elf", "Half-orc", "Halfling", "Human", "Tiefling"]
     raceListList = len(raceList) // 2
 
+    startActions = ["Make new character", "Edit existing character","Export character sheet", "Make or change character library"]
+
+    def loadLogo(filename="logo.txt"):
+        try:
+            with open(filename, 'r', encoding="UTF-8") as logo:
+                return logo.read()
+        except:
+            return "!ERROR: Logo not found!"
+
     def getValue(file, value):
         with open(f'{file}', 'r') as f:
             setting = json.load(f)
         return setting[value]
 
-    def className(number):
+    def listBaseStats(filePath):
         try:
-            return str(classList[int(number) - 1])
+            with open(filePath, 'r') as f:
+                stats = json.load(f)
+            name = data.get('name', 'N/A')
+            charClass = data.get('classLevel', {}).get('class', 'N/A') if isinstance(data.get('classLevel'), dict) else 'N/A'
+            level = data.get('classLevel', {}).get('level', 'N/A') if isinstance(data.get('classLevel'), dict) else 'N/A'
+
+            return name, charClass, level
+
+        except (json.JSONDecodeError, IOError) as e:
+            return f"ERROR: {e}"
+
+
+    def paramName(number, var):
+        try:
+            return str(var[int(number) - 1])
         except:
             rprint("[bold red]ERROR: Please enter a valid option.[/bold red]")
+
+    def listChars():
+        table = Table(title="Characters")
+
+        table.add_column("ID", justify="right", style="green")
+        table.add_column("Name", style="magenta")
+        table.add_column("Level", justify="left", style="cyan")
+        table.add_column("Class", justify="left",style="cyan")
+
+        try:
+            libPath = os.path.expanduser(getValue(settings.json, CharLibPath))
+            result = subprocess.run(['ls', os.path.expanduser(libPath)], capture_output= True, text= True, check= True)
+            
+            files = result.stdout.strip().split('\n')
+            files = [f for files in f if f]
+            if not files:
+                rprint(f"[bold red]ERROR: No files in directory: {libPath}[/bold red]")
+                return
+            for i, filename in enumerate(files, 1):
+                filePath = os.path.join(libPath, filename)
+                name, charClass, level = listBaseStats(filePath)
+                table.add_row(f"{i}", f"{name.replace("-", " ").title()}", f"{level}", f"{charClass}")
+
+                console.print(table)
+
+        except subprocess.CalledProcessError as e:
+            rprint(f"[bold red]ERROR: Error listing directory: {e}[/bold red]")
+        except Exception as e:
+            rprint(f"[bold red]ERROR: Unexpected error: {e}[/bold red]")
+
     print()
-    print("Welcome to Character Manager!")
+    print(loadLogo())
     print()
-    startActions = ["Make new character", "Edit existing character","Export character sheet", "Make or change character library"]
     for i, item in enumerate(startActions, 1):
         print(f"{i}. {item}")
         rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
@@ -67,7 +124,7 @@ try:
                     print(f"{left:<15} {right}")
                 print()
                 charClass = input("Choose a class for your character: ")
-                os.environ['CLASS'] = str(className(charClass))
+                os.environ['CLASS'] = str(paramName(classList, charClass))
                 
                 level = int(input("Enter a level for your character: (1-20) "))
                 if level > 20:
@@ -80,33 +137,41 @@ try:
                     os.environ['LEVEL'] = str(level)
 
             elif statChoice == 3:
-            elif statChoice == 4:
-            elif statChoice == 5:
-            elif statChoice == 6:
-            elif statChoice == 7:
-            elif statChoice == 8:
-            elif statChoice == 9:
-            elif statChoice == 10:
-            elif statChoice == 11:
-            elif statChoice == 12:
-            elif statChoice == 13:
-            elif statChoice == 14:
-            elif statChoice == 15:
-            elif statChoice == 16:
-            elif statChoice == 17:
-            elif statChoice == 18:
-            elif statChoice == 19:
-            elif statChoice == 20:
+                for i in range(raceListList):
+                    left = f"{i+1}. {raceList[i]}"
+                    right = f"{i+1+raceListList}. {raceList[i+raceListList]}"
+                    print(f"{left:<15} {right}")
+                print()
+                race = int(input("Choose a race: "))
+                os.environ['RACE'] = str(paramName(raceList, race))
+
+            #elif statChoice == 4:
+            #elif statChoice == 5:
+            #elif statChoice == 6:
+            #elif statChoice == 7:
+            #elif statChoice == 8:
+            #elif statChoice == 9:
+            #elif statChoice == 10:
+            #elif statChoice == 11:
+            #elif statChoice == 12:
+            #elif statChoice == 13:
+            #elif statChoice == 14:
+            #elif statChoice == 15:
+            #elif statChoice == 16:
+            #elif statChoice == 17:
+            #elif statChoice == 18:
+            #elif statChoice == 19:
+            #elif statChoice == 20:
             elif statChoice == 21:
                 charData = {
-                    "name": f"{os.environ.get['NAME']}"
+                    "name": f"{os.environ.get['NAME']}",
                     "classLevel": {
-                        "class": f"{os.environ.get['CLASS']}"
+                        "class": f"{os.environ.get['CLASS']}",
                         "level": f"{int(os.environ.get['LEVEL'])}"
                     }
                 }
                 charName = name.replace(" ", "-").lower()
-                libPath = getValue(char.json, CharlibPath)
+                libPath = getValue(char.json, CharLibPath)
                 os.system(f"touch {libPath}{charname}.json")
 
                 with open(f'{libPath}{charName}.json', 'w') as f:
@@ -136,7 +201,7 @@ try:
         elif settingsChange == 2:
             dirName = input("Choose a name for the directory: ")
             newDirName = dirName.replace(" ", "-").lower()
-            os.system(f"mkdir ~/{newDirName}/")
+            os.mkdir(f"~/{newDirName}")
 
             newPath = {
                 "CharLibPath": f"~/{newDirName}"
