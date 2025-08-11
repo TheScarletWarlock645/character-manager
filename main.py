@@ -106,15 +106,15 @@ try:
                 left = f"{i+1}. {statList[i]}"
                 right = f"{i+1+statListList}. {statList[i+statListList]}"
                 print(f"{left:<30} {right}")
-            print("21. Save character")
             print()
-            statChoice = int(input("Choose a stat to edit: "))
+            rprint("[bold green]Save character[/bold green] (s)")
             print()
+            statChoice = input("Choose a stat to edit: ")
 
-            if statChoice == 1:
+            if statChoice == "1":
                 name  = input("Enter a first and last name for your character: ")
                 os.environ['NAME'] = str(name.replace(" ", "-").lower())
-            elif statChoice == 2:
+            elif statChoice == "2":
                 for i in range(classListList):
                     left = f"{i+1}. {classList[i]}"
                     right = f"{i+1+classListList}. {classList[i+classListList]}"
@@ -133,7 +133,7 @@ try:
                 else:
                     os.environ['LEVEL'] = str(level)
 
-            elif statChoice == 3:
+            elif statChoice == "3":
                 for i in range(raceListList):
                     left = f"{i+1}. {raceList[i]}"
                     right = f"{i+1+raceListList}. {raceList[i+raceListList]}"
@@ -142,24 +142,24 @@ try:
                 race = int(input("Choose a race: "))
                 os.environ['RACE'] = str(paramName(raceList, race))
 
-            #elif statChoice == 4:
-            #elif statChoice == 5:
-            #elif statChoice == 6:
-            #elif statChoice == 7:
-            #elif statChoice == 8:
-            #elif statChoice == 9:
-            #elif statChoice == 10:
-            #elif statChoice == 11:
-            #elif statChoice == 12:
-            #elif statChoice == 13:
-            #elif statChoice == 14:
-            #elif statChoice == 15:
-            #elif statChoice == 16:
-            #elif statChoice == 17:
-            #elif statChoice == 18:
-            #elif statChoice == 19:
-            #elif statChoice == 20:
-            elif statChoice == 21:
+            #elif statChoice == "4":
+            #elif statChoice == "5":
+            #elif statChoice == "6":
+            #elif statChoice == "7":
+            #elif statChoice == "8":
+            #elif statChoice == "9":
+            #elif statChoice == "10":
+            #elif statChoice == "11":
+            #elif statChoice == "12":
+            #elif statChoice == "13":
+            #elif statChoice == "14":
+            #elif statChoice == "15":
+            #elif statChoice == "16":
+            #elif statChoice == "17":
+            #elif statChoice == "18":
+            #elif statChoice == "19":
+            #elif statChoice == "20":
+            elif statChoice == "s":
                 charData = {
                     "name": f"{os.environ.get['NAME']}",
                     "classLevel": {
@@ -173,6 +173,8 @@ try:
 
                 with open(f'{libPath}{charName}.json', 'w') as f:
                     json.dump(charData, f)
+                
+                rprint("[bold green]Character saved succesfully![/bold green]")
             else:
                 print()
                 rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
@@ -185,26 +187,30 @@ try:
         print()
     elif startChoice == 4:
         print()
-        settingsChange = int(input("Would you like to change the character library path or make a new directory? (1, 2) "))
+        settingsChange = input("Would you like to change the character library path or make a new directory? (1, 2) ")
         print()
         
-        if settingsChange == 1:
+        if settingsChange == "1":
             chCarLib = input("Enter new path for character library: (make sure the path ends with a /)")
             newPath = {
-                "CharLibPath": f"{chCarLib}"
+                "CharLibPath": f"{os.path.expanduser(chCarLib)}"
             }
             with open('settings.json', 'w') as f:
                 json.dump(newPath, f)
-        elif settingsChange == 2:
+        elif settingsChange == "2":
             dirName = input("Choose a name for the directory: ")
             newDirName = dirName.replace(" ", "-").lower()
-            os.mkdir(f"~/{newDirName}")
+            os.mkdir(os.path.expanduser(f"~/{newDirName}"))
 
             newPath = {
                 "CharLibPath": f"~/{newDirName}"
             }
             with open('settings.json', 'w') as f:
                 json.dump(newPath, f)
+        
+        else:
+            rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
+            exit()
 
     else:
         print()
@@ -212,6 +218,7 @@ try:
         exit()
 
 except KeyboardInterrupt:
+    print("\n")
     quitWarning = Prompt.ask("[bold yellow]WARNING: Quitting now will delete any unsaved changed. Quit? (y/N)").strip()
     if quitWarning.lower() in ["", "n", "no"]:
         print()
