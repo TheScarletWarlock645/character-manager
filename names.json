@@ -1,29 +1,74 @@
 {
-    "dragonborn": [
-        "placeholder"
-    ],
-    "dwarf": [
-        "placeholder"
-    ],
-    "elf": [
-        "placeholder"
-    ],
-    "gnome": [
-        "placeholder"
-    ],
-    "half-elf": [
-        "placeholder"
-    ],
-    "half-orc": [
-        "placeholder"
-    ],
-    "halfling": [
-        "placeholder"
-    ],
-    "human": [
-        "placeholder"
-    ],
-    "teifling": [
-        "placeholder"
-    ]
+    "dragonborn": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "dwarf": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "elf": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "gnome": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "half-elf": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "half-orc": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "halfling": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "human": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    },
+    "teifling": {
+        "m": [
+            "placeholder"
+        ],
+        "f": [
+            "placeholder"
+        ]
+    }
 }
