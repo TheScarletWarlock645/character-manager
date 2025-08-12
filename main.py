@@ -1,4 +1,5 @@
 import json
+import random
 import os
 import rich
 import subprocess
@@ -90,6 +91,27 @@ try:
         except Exception as e:
             rprint(f"[bold red]ERROR: Unexpected error: {e}[/bold red]")
 
+    def rollDice(dice, count):
+        def d6():
+            value = sum(random.randint(1, 6) for _ in range(int(count)))
+            return value
+        def d8():
+            value = random.randint(1, 8)
+            return value
+        def d10():
+            value = random.randint(0, 9)
+            return value
+        def d12():
+            value = random.randint(1, 12)
+            return value
+        def d20():
+            value = random.randint(1, 20)
+            return value
+        
+        target = locals()[dice]
+        result = target()
+        return result
+
     print()
     print(loadLogo())
     print()
@@ -102,10 +124,31 @@ try:
 
         if createChoice == "1":
             print()
-            print("You chose: guided character creation")
+            rprint("You chose: [bold green]guided character creation[/bold green]")
+            print("Welcome to guided character creation! This will walk you through creating a character")
+            rprint("for the first time or maybe just refresh your skills. [bold green]After each step, press enter to proceed.[/bold green]")
             print()
+            for i in range(raceListList):
+                left = f"{raceList[i]}"
+                right = f"{raceList[i+raceListList]}"
+                print(f"{left:<15} {right}")
+            print()
+            race = Prompt.ask("Choose a race for your character: [bold green](Please ensure it is spelled correctly)[/bold green]").lower()
+            while True:
+                genderInput = Prompt.ask("Choose a gender for your character: [bold green]m/f/o(other)[/bold green]")
+                if genderInput == "m":
+                    gender = "m"
+                elif genderInput == "f":
+                    gender = "f"
+                elif genderInput == "o":
+                    pass #FINISH THIS LATER: VERY IMPORTANT
+                else:
+                    rprint("[bold red]ERROR: Please enter a valid gender: male(m)/female(f)/other(o)[/bold red]")
+                    continue
 
         elif createChoice == "2":
+            print()
+            rprint("You chose: [bold green]non-guided character creation[/bold green]")
             while True:
                 name = valueEnv('NAME')
                 classLevel = valueEnv('CLASS_LEVEL')
@@ -119,7 +162,7 @@ try:
                 skillProfs = valueEnv('SKILL_PROFICIENCIES')
                 miscProfs = valueEnv('MISC_PROFS')
                 armourClass = valueEnv('ARMOUR_CLASS')
-                iitiative = valueEnv('INITIATIVE')
+                initiative = valueEnv('INITIATIVE')
                 speed = valueEnv('SPEED')
                 hp = valueEnv('HP')
                 hitDice = valueEnv('HIT_DICE')
@@ -128,16 +171,16 @@ try:
                 featuresTraits = valueEnv('FEATURES_AND_TRAITS')
                 atkSpells = valueEnv('ATTACK_SPELLS')
 
-                statValue = {"Name": name, "Class and level": classlevel, "Race": race, "Background": background, "alignment": align, "XP": xp, "Prof bonus": profBonus,
+                statValue = {"Name": name, "Class and level": classLevel, "Race": race, "Background": background, "alignment": align, "XP": xp, "Prof bonus": profBonus,
                 "Ability scores": abilityScores, "Ability profs": abilityProfs, "Skill profs": skillProfs, "Other profs and languages": miscProfs, "Armour class": armourClass,
                 "Initiative": initiative, "Speed": speed, "HP": hp, "Hit dice": hitDice, "Money": money, "Equipment": equipment, "Features and traits": featuresTraits,
                 "Attacks and spellcasting": atkSpells}
 
-                print("You chose: non-guided character creation")
                 print()
+                extra = statValue.get(item, "")
                 for i in range(statListList):
-                    left = f"{i+1}. {statList[i]}"
-                    right = f"{i+1+statListList}. {statList[i+statListList]}"
+                    left = f"{i+1}. {statList[i]}: {extra}"
+                    right = f"{i+1+statListList}. {statList[i+statListList]}: {extra}"
                     print(f"{left:<30} {right}")
                 print()
                 rprint("[bold green]Save character[/bold green] (s)")
@@ -214,7 +257,7 @@ try:
                     print()
                     rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
                     exit()
-        
+
         else:
             print()
             rprint("[bold red]ERROR: Please enter a valid number.[/bold red]")
