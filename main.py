@@ -22,6 +22,13 @@ try:
 
     startActions = ["Make new character", "Edit existing character","Export character sheet", "Make or change character library"]
 
+    def valueEnv(var):
+        value = os.environ.get(var)
+        if value and value.strip():
+            return value
+        else:
+            return
+
     def loadLogo(filename="logo.txt"):
         try:
             with open(filename, 'r', encoding="UTF-8") as logo:
@@ -100,7 +107,32 @@ try:
 
         elif createChoice == "2":
             while True:
-                print()
+                name = valueEnv('NAME')
+                classLevel = valueEnv('CLASS_LEVEL')
+                race = valueEnv('RACE')
+                background = valueEnv('BACKGROUND')
+                align = valueEnv('ALIGNMENT')
+                xp = valueEnv('XP')
+                profBonus = valueEnv('PROFICIENCY_BONUS')
+                abilityScores = valueEnv('ABILITY_SCORES')
+                abilityProfs = valueEnv('ABILITY_PROFIENCIES')
+                skillProfs = valueEnv('SKILL_PROFICIENCIES')
+                miscProfs = valueEnv('MISC_PROFS')
+                armourClass = valueEnv('ARMOUR_CLASS')
+                iitiative = valueEnv('INITIATIVE')
+                speed = valueEnv('SPEED')
+                hp = valueEnv('HP')
+                hitDice = valueEnv('HIT_DICE')
+                money = valueEnv('MONEY')
+                equipment = valueEnv('EQUIPMENT')
+                featuresTraits = valueEnv('FEATURES_AND_TRAITS')
+                atkSpells = valueEnv('ATTACK_SPELLS')
+
+                statValue = {"Name": name, "Class and level": classlevel, "Race": race, "Background": background, "alignment": align, "XP": xp, "Prof bonus": profBonus,
+                "Ability scores": abilityScores, "Ability profs": abilityProfs, "Skill profs": skillProfs, "Other profs and languages": miscProfs, "Armour class": armourClass,
+                "Initiative": initiative, "Speed": speed, "HP": hp, "Hit dice": hitDice, "Money": money, "Equipment": equipment, "Features and traits": featuresTraits,
+                "Attacks and spellcasting": atkSpells}
+
                 print("You chose: non-guided character creation")
                 print()
                 for i in range(statListList):
@@ -123,8 +155,8 @@ try:
                         right = f"{i+1+classListList}. {classList[i+classListList]}"
                         print(f"{left:<15} {right}")
                     print()
-                    charClass = input("Choose a class for your character: ")
-                    os.environ['CLASS'] = str(paramName(classList, charClass))
+                    charClassOG = input("Choose a class for your character: ")
+                    charClass = str(paramName(classList, charClass))
                     
                     level = int(input("Enter a level for your character: (1-20) "))
                     if level > 20:
@@ -132,7 +164,7 @@ try:
                     elif level < 1:
                         rprint("ERROR: Please enter a valid level.")
                     else:
-                        os.environ['LEVEL'] = str(level)
+                        os.environ['CLASS_LEVEL'] = str(f"{level}, {charClass}")
                         continue
 
                 elif statChoice == "3":
@@ -164,10 +196,10 @@ try:
                 #elif statChoice == "20":
                 elif statChoice == "s":
                     charData = {
-                        "name": f"{os.environ.get['NAME']}",
+                        "name": f"{os.environ.get('NAME')}",
                         "classLevel": {
-                            "class": f"{os.environ.get['CLASS']}",
-                            "level": f"{int(os.environ.get['LEVEL'])}"
+                            "class": f"{os.environ.get('CLASS')}",
+                            "level": int(os.environ.get('LEVEL'))
                         }
                     }
                     charName = name.replace(" ", "-").lower()
@@ -228,7 +260,7 @@ except KeyboardInterrupt:
     print("\n")
     quitWarning = Prompt.ask("[bold yellow]WARNING: Quitting now will delete any unsaved changed. Quit? (y/N)").strip()
     if quitWarning.lower() in ["", "n", "no"]:
-        print()
+        os.system(f"python3 {os.path.abspath(__file__)}")
     else:
         print()
         rprint("Goodbye [bold yellow]:))[/bold yellow]")
