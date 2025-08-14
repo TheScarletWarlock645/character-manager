@@ -1,15 +1,75 @@
 {
     "dragonborn": {
         "m": [
-            "placeholder"
+            "Arjhan",
+            "Balasar",
+            "Bharash",
+            "Donaar",
+            "Ghesh",
+            "Heskan",
+            "Kriv",
+            "Medrash",
+            "Mehen",
+            "Nadarr",
+            "Pandjed",
+            "Patrin",
+            "Rhogar",
+            "Shamash",
+            "Shedinn",
+            "Tarhun",
+            "Torinn"
         ],
         "f": [
-            "placeholder"
+            "Akra",
+            "Biri",
+            "Daar",
+            "Farideh",
+            "Harann",
+            "Havilar",
+            "Jheri",
+            "Kava",
+            "Korinn",
+            "Mishann",
+            "Nala",
+            "Perra",
+            "Rainann",
+            "Sora",
+            "Surina",
+            "Thava",
+            "Uadjit"
+        ],
+        "clan": [
+                "Clethtinthiallor",
+                "Daardendrien",
+                "Delmirev",
+                "Drachedanion",
+                "Fenkenkabradon",
+                "Kapeshkmolik",
+                "Kerrhylon",
+                "Kimbatuul",
+                "Linxakasendalor",
+                "Myastan",
+                "Nemmonis",
+                "Norixius",
+                "Ophinshtalajir",
+                "Prexijandilin",
+                "Shestendeliath",
+                "Turnuroth",
+                "Verthisathurgiesh",
+                "Yarjerit"
         ]
     },
     "dwarf": {
         "m": [
-            "placeholder"
+            "Adrik",
+            "Alberich",
+            "Baern",
+            "Barendd",
+            "Brottor",
+            "Bruenor",
+            "Dain",
+            "Darrak",
+            "Delg"
         ],
         "f": [
             "placeholder"
