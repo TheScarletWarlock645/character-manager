@@ -1,4 +1,3 @@
-.vscode
-tests/
+test*
 todo.txt
 .github/
