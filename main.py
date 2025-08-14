@@ -44,10 +44,32 @@ try:
         except:
             return "!ERROR: Logo not found!"
 
-    def getValue(file, value):
-        with open(f'{file}', 'r') as f:
-            setting = json.load(f)
-        return setting[value]
+    def getValue(file, key, unwrap_single_lists=True):
+        try:
+            with open(file, "r") as f:
+                data = json.load(f)
+            keys = key.split(".")
+            current = data
+
+            for k in keys:
+                if isinstance(current, dict) and k in current:
+                    current = current[k]
+                elif isinstance(current, list) and k.isdigit():
+                    idx = int(k)
+                    if 0 <= idx < len(current):
+                        current = current[idx]
+                    else:
+                        return None
+                else:
+                    return None
+            
+            if unwrap_single_lists and isinstance(current, list) and len(current) == 1:
+                return current[0]
+
+            return current
+            
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            return f"{e}"
 
     def listBaseStats(filePath):
         try:
@@ -78,7 +100,7 @@ try:
         table.add_column("Class", justify="left",style="cyan")
 
         try:
-            libPath = os.path.expanduser(getValue("settings.json", "['CharLibPath']"))
+            libPath = os.path.expanduser(getValue("settings.json", "CharLibPath"))
             result = subprocess.run(['ls', os.path.expanduser(libPath)], capture_output= True, text= True, check= True)
             
             files = result.stdout.strip().split('\n')
@@ -127,7 +149,7 @@ try:
 
             if stepThree < 0:
                 return str(f"{stepThree}")
-            elif stepThree > 0 or stepThree == 0:
+            elif stepThree >= 0:
                 return str(f"+{stepThree}")
 
         resultStr = formula(strth)
@@ -161,13 +183,13 @@ try:
                 print("\nNext, choose a gender for your character. This will determine which the example names that will show up. Choosing other will\nshow male and female names.\n")
                 genderInput = Prompt.ask("Choose a gender for your character: [bold green]male(m)/female(f)/other(o)[/bold green]")
                 if genderInput == "m":
-                    names = getValue("names.json", f"['{race}']['m']")
+                    names = getValue("names.json", f"{race}.m")
                     break
                 elif genderInput == "f":
-                    names = getValue("names.json", f"['{race}']['f']")
+                    names = getValue("names.json", f"{race}.f")
                     break
                 elif genderInput == "o":
-                    names = f"{getValue("names.json", f"['{race}']['m']")} {getValue("names.json", f"['{race}']['m']")}"
+                    names = f"{getValue("names.json", f"{race}.m")} {getValue("names.json", f"{race}.m")}"
                     break
                 else:
                     rprint("[bold red]ERROR: Please enter a valid gender: male(m)/female(f)/other(o)[/bold red]")
