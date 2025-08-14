@@ -1,6 +1,5 @@
 import json
 import random
-import sys
 import math
 import os
 import rich
@@ -10,25 +9,17 @@ from rich.prompt import Prompt
 from rich.table import Table
 from rich.console import Console
 
-#os.environ['PRODUCTION'] = str("true")
-
-if os.environ.get('PRODUCTION') == "true":
-    sys.tracebacklimit = 0
+from lists import STAT_LIST, STAT_LIST_DIVIDE, CLASS_LIST, CLASS_LIST_DIVIDE, RACE_LIST, RACE_LIST_DIVIDE
 
 try:
     console = Console()
 
-    statList = ["Name", "Class and level", "Race", "Background", "Alignment", "XP", "Prof bonus", "Ability scores", "Ability profs", "Skill profs",
-    "Other profs and languages", "Armour class", "Initiative", "Speed", "HP", "Hit dice", "Money", "Equipment", "Features and traits", "Attacks and spellcasting"]
-    statListList = len(statList) // 2
-
-    classList = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"]
-    classListList = len(classList) // 2
-
-    raceList = ["Dragonborn", "Dwarf", "Elf", "Gnome", "Half-elf", "Half-orc", "Halfling", "Human", "Tiefling"]
-    raceListList = len(raceList) // 2
-
-    startActions = ["Make new character", "Edit existing character","Export character sheet", "Make or change character library"]
+    statList = STAT_LIST
+    statListList = STAT_LIST_DIVIDE
+    classList = CLASS_LIST
+    classListList = CLASS_LIST_DIVIDE
+    raceList = RACE_LIST
+    raceListList = RACE_LIST_DIVIDE
 
     def valueEnv(var):
         value = os.environ.get(var)
@@ -162,6 +153,9 @@ try:
         return resultStr, resultDex, resultInt, resultWis, resultCon, resultChar
 
     print(f"\n{loadLogo()}\n")
+
+    startActions = ["Make new character", "Edit existing character","Export character sheet", "Make or change character library"]
+    
     for i, item in enumerate(startActions, 1):
         print(f"{i}. {item}")
     print()
@@ -203,7 +197,7 @@ try:
             name = f"{firstName.lower()}-{lastName.lower()}"
             rprint(f"\n[bold yellow]Nice to meet you {name.replace("-", " ").title()}![/bold yellow]\n")
 
-            # Begin again here
+            rprint("The next step in the character creation process is choosing a backround. This defines your character origins.\n")
 
         elif createChoice == "2":
             rprint("You chose: [bold green]non-guided character creation[/bold green]")
