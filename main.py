@@ -1,5 +1,7 @@
 import json
 import random
+import sys
+import math
 import os
 import rich
 import subprocess
@@ -7,6 +9,11 @@ from rich import print as rprint
 from rich.prompt import Prompt
 from rich.table import Table
 from rich.console import Console
+
+#os.environ['PRODUCTION'] = str("true")
+
+if os.environ.get('PRODUCTION') == "true":
+    sys.tracebacklimit = 0
 
 try:
     console = Console()
@@ -38,9 +45,10 @@ try:
             return "!ERROR: Logo not found!"
 
     def getValue(file, value):
-        with open(f'{file}', 'r') as f:
-            setting = json.load(f)
-        return setting[value]
+        with open(f"{file}", "r") as f:
+            data = json.load(f)
+            cleanValue = f"['{value}']" if not value.startswith('[') else value
+        return eval(f"data{cleanValue}")
 
     def listBaseStats(filePath):
         try:
@@ -71,7 +79,7 @@ try:
         table.add_column("Class", justify="left",style="cyan")
 
         try:
-            libPath = os.path.expanduser(getValue(settings.json, CharLibPath))
+            libPath = os.path.expanduser(getValue("settings.json", "CharLibPath"))
             result = subprocess.run(['ls', os.path.expanduser(libPath)], capture_output= True, text= True, check= True)
             
             files = result.stdout.strip().split('\n')
@@ -111,23 +119,39 @@ try:
         target = locals()[dice]
         result = target()
         return result
+    
+    def convertScores(strth, dex, intel, wis, con, char):
+        def formula(stat):
+            stepOne = int(stat) - 10
+            stepTwo = stepOne // 2
+            stepThree = math.floor(stepTwo)
 
-    print()
-    print(loadLogo())
-    print()
+            if stepThree < 0:
+                return str(f"{stepThree}")
+            elif stepThree > 0 or stepThree == 0:
+                return str(f"+{stepThree}")
+
+        resultStr = formula(strth)
+        resultDex = formula(dex)
+        resultInt = formula(intel)
+        resultWis = formula(wis)
+        resultCon = formula(con)
+        resultChar = formula(char)
+
+        return resultStr, resultDex, resultInt, resultWis, resultCon, resultChar
+
+    print(f"\n{loadLogo()}\n")
     for i, item in enumerate(startActions, 1):
         print(f"{i}. {item}")
     print()
     startChoice = input("Enter an option: ")
     if startChoice == "1":
-        createChoice = input("Guided or non guided character creation? (1, 2) ")
+        createChoice = Prompt.ask("Guided or non guided character creation? [bold green](1, 2)[/bold green] ")
 
         if createChoice == "1":
-            print()
-            rprint("You chose: [bold green]guided character creation[/bold green]")
-            print("Welcome to guided character creation! This will walk you through creating a character")
-            rprint("for the first time or maybe just refresh your skills. [bold green]After each step, press enter to proceed.[/bold green]")
-            print()
+            rprint("You chose: [bold green]guided character creation[/bold green]\n")
+            rprint("Welcome to guided character creation! This will walk you through creating a character\nfor the first time or maybe just refresh your skills.\n[bold green]After each step, press enter to proceed.[/bold green]\n\n")
+            print("The first step will be choosing a race for your character. This step will determine things lke your name and features in the future.\n")
             for i in range(raceListList):
                 left = f"{raceList[i]}"
                 right = f"{raceList[i+raceListList]}"
@@ -135,19 +159,32 @@ try:
             print()
             race = Prompt.ask("Choose a race for your character: [bold green](Please ensure it is spelled correctly)[/bold green]").lower()
             while True:
-                genderInput = Prompt.ask("Choose a gender for your character: [bold green]m/f/o(other)[/bold green]")
+                print("\nNext, choose a gender for your character. This will determine which the example names that will show up. Choosing other will\nshow male and female names.\n")
+                genderInput = Prompt.ask("Choose a gender for your character: [bold green]male(m)/female(f)/other(o)[/bold green]")
                 if genderInput == "m":
-                    gender = "m"
+                    names = getValue("names.json", f"{race}.m")
+                    break
                 elif genderInput == "f":
-                    gender = "f"
+                    names = getValue("names.json", f"{race}.f")
+                    break
                 elif genderInput == "o":
-                    pass #FINISH THIS LATER: VERY IMPORTANT
+                    names = f"{getValue("names.json", f"{race}.f")} {getValue("names.json", f"{race}.m")}"
+                    break
                 else:
                     rprint("[bold red]ERROR: Please enter a valid gender: male(m)/female(f)/other(o)[/bold red]")
                     continue
+            
+            print(f"\n{names}\n")
+            rprint("[bold green]Don't forget you can make up your own name too![/bold green]\n")
+            firstName = Prompt.ask("Enter a first name for your character: ")
+            lastName = Prompt.ask("Enter a last name for your character: ")
+
+            name = f"{firstName.lower()}-{lastName.lower()}"
+            rprint(f"\n[bold yellow]Nice to meet you {name.replace("-", " ").title()}![/bold yellow]\n")
+            
+
 
         elif createChoice == "2":
-            print()
             rprint("You chose: [bold green]non-guided character creation[/bold green]")
             while True:
                 name = valueEnv('NAME')
@@ -183,8 +220,7 @@ try:
                     right = f"{i+1+statListList}. {statList[i+statListList]}: {extra}"
                     print(f"{left:<30} {right}")
                 print()
-                rprint("[bold green]Save character[/bold green] (s)")
-                print()
+                rprint("[bold green]Save character[/bold green] (s)\n")
                 statChoice = input("Choose a stat to edit: ")
                 print()
 
@@ -246,7 +282,7 @@ try:
                         }
                     }
                     charName = name.replace(" ", "-").lower()
-                    libPath = getValue(char.json, CharLibPath)
+                    libPath = getValue("char.json", "CharLibPath")
                     os.system(f"touch {libPath}{charname}.json")
 
                     with open(f'{libPath}{charName}.json', 'w') as f:
@@ -305,6 +341,4 @@ except KeyboardInterrupt:
     if quitWarning.lower() in ["", "n", "no"]:
         os.system(f"python3 {os.path.abspath(__file__)}")
     else:
-        print()
-        rprint("Goodbye [bold yellow]:))[/bold yellow]")
-        exit()
+        exit("\nGoodbye!")
