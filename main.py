@@ -45,10 +45,9 @@ try:
             return "!ERROR: Logo not found!"
 
     def getValue(file, value):
-        with open(f"{file}", "r") as f:
-            data = json.load(f)
-            cleanValue = f"['{value}']" if not value.startswith('[') else value
-        return eval(f"data{cleanValue}")
+        with open(f'{file}', 'r') as f:
+            setting = json.load(f)
+        return setting[value]
 
     def listBaseStats(filePath):
         try:
@@ -79,7 +78,7 @@ try:
         table.add_column("Class", justify="left",style="cyan")
 
         try:
-            libPath = os.path.expanduser(getValue("settings.json", "CharLibPath"))
+            libPath = os.path.expanduser(getValue("settings.json", "['CharLibPath']"))
             result = subprocess.run(['ls', os.path.expanduser(libPath)], capture_output= True, text= True, check= True)
             
             files = result.stdout.strip().split('\n')
@@ -162,13 +161,13 @@ try:
                 print("\nNext, choose a gender for your character. This will determine which the example names that will show up. Choosing other will\nshow male and female names.\n")
                 genderInput = Prompt.ask("Choose a gender for your character: [bold green]male(m)/female(f)/other(o)[/bold green]")
                 if genderInput == "m":
-                    names = getValue("names.json", f"{race}.m")
+                    names = getValue("names.json", f"['{race}']['m']")
                     break
                 elif genderInput == "f":
-                    names = getValue("names.json", f"{race}.f")
+                    names = getValue("names.json", f"['{race}']['f']")
                     break
                 elif genderInput == "o":
-                    names = f"{getValue("names.json", f"{race}.f")} {getValue("names.json", f"{race}.m")}"
+                    names = f"{getValue("names.json", f"['{race}']['m']")} {getValue("names.json", f"['{race}']['m']")}"
                     break
                 else:
                     rprint("[bold red]ERROR: Please enter a valid gender: male(m)/female(f)/other(o)[/bold red]")
@@ -181,8 +180,8 @@ try:
 
             name = f"{firstName.lower()}-{lastName.lower()}"
             rprint(f"\n[bold yellow]Nice to meet you {name.replace("-", " ").title()}![/bold yellow]\n")
-            
 
+            # Begin again here
 
         elif createChoice == "2":
             rprint("You chose: [bold green]non-guided character creation[/bold green]")
