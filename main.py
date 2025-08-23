@@ -166,7 +166,8 @@ try:
         if createChoice == "1":
             rprint("You chose: [bold green]guided character creation[/bold green]\n")
             rprint("Welcome to guided character creation! This will walk you through creating a character\nfor the first time or maybe just refresh your skills.\n[bold green]After each step, press enter to proceed.[/bold green]\n\n")
-            print("The first step will be choosing a race for your character. This step will determine things lke your name and features in the future.\n")
+            print("The first step will be choosing a race for your character. This step will determine things like your name and features in the future.\n\n")
+            rprint("[bold green]Dragonborn[/bold green]: A race originially born from the eggs of dragons. Strong and stubborn- but above all else loyal to their clans. You will have to choose a clan name.")
             for i in range(raceListList):
                 left = f"{raceList[i]}"
                 right = f"{raceList[i+raceListList]}"
@@ -197,7 +198,9 @@ try:
             name = f"{firstName.lower()}-{lastName.lower()}"
             rprint(f"\n[bold yellow]Nice to meet you {name.replace("-", " ").title()}![/bold yellow]\n")
 
-            rprint("The next step in the character creation process is choosing a backround. This defines your character origins.\n")
+            print("The next step in the character creation process is choosing a backround. This defines your character origins.\n")
+            rprint("[bold green]Acolyte[/bold green]")
+            # FINISH THIS-- TOOK BREAK TO WORK ON ADDING BETTER DESCRIPTIONS
 
         elif createChoice == "2":
             rprint("You chose: [bold green]non-guided character creation[/bold green]")
