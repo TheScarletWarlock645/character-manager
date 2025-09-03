@@ -1,0 +1,5 @@
+test*
+todo.txt
+.github/
+__pycache__/*
+character_options/
