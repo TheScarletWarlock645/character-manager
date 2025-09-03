@@ -5,16 +5,16 @@ from rich import print as rprint
 from rich.prompt import Prompt
 
 try:
-    def loadfile(file):
+    def loadfile(filename="logo.txt"):
         try:
-            with open(f"{file}", 'r', encoding="utf-8") as f:
+            with open(filename, 'r', encoding="UTF-8") as f:
                 return f.read()
         except:
             return "ERROR"
 
     start_actions = ["Make new character", "Edit existing characters", "Export character", "Edit settings"]
 
-    print(f"\n{loadfile("logo.txt")}\n")
+    print(f"\n{loadfile()}\n")
     rprint("Welcome to Character Manager!")
     for i, name in enumerate(start_actions, 1):
         print(f"{i}. {name}")
